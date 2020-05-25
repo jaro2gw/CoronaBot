@@ -1,9 +1,5 @@
-//
-// Created by pjaro on 25.05.2020.
-//
-
-#ifndef CORONABOT_SPEEDCONTROLLER_H
-#define CORONABOT_SPEEDCONTROLLER_H
+#ifndef CORONABOT_SPEED_H
+#define CORONABOT_SPEED_H
 
 #include "pin.hpp"
 
@@ -13,4 +9,4 @@ namespace Speed {
     void decrease() { digitalWrite(PIN::SPEED_LEVEL, HIGH); }
 }
 
-#endif //CORONABOT_SPEEDCONTROLLER_H
+#endif //CORONABOT_SPEED_H

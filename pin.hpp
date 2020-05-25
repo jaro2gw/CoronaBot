@@ -1,7 +1,3 @@
-//
-// Created by pjaro on 25.05.2020.
-//
-
 #ifndef CORONABOT_CONSTANT_H
 #define CORONABOT_CONSTANT_H
 
