@@ -6,155 +6,53 @@
  * Szalczyk Paweł
  */
 
-namespace Constant {
-    // Left motor
-    const int MOTOR_LEFT_ACTIVATE = 2;
-    const int MOTOR_LEFT_FORWARD = 3;
-    const int MOTOR_LEFT_BACKWARD = 4;
-
-    // Left sensors
-    const int SENSOR_LEFT_NEAR = 5;
-    const int SENSOR_LEFT_FAR = 6;
-
-    // Right motor
-    const int MOTOR_RIGHT_ACTIVATE = 8;
-    const int MOTOR_RIGHT_FORWARD = 9;
-    const int MOTOR_RIGHT_BACKWARD = 10;
-
-    // Right sensors
-    const int SENSOR_RIGHT_NEAR = 11;
-    const int SENSOR_RIGHT_FAR = 12;
-
-    const int SPEED_LEVEL_CONTROLLER = 13;
-}
-
-namespace Motor {
-    struct motor {
-        int activate;
-        int forward;
-        int backward;
-    };
-
-    struct motor left = {
-            Constant::MOTOR_LEFT_ACTIVATE,
-            Constant::MOTOR_LEFT_FORWARD,
-            Constant::MOTOR_LEFT_BACKWARD
-    };
-
-    struct motor right = {
-            Constant::MOTOR_RIGHT_ACTIVATE,
-            Constant::MOTOR_RIGHT_FORWARD,
-            Constant::MOTOR_RIGHT_BACKWARD
-    };
-
-    void activate(struct motor *m) {
-        pinMode(m->activate, OUTPUT);
-        pinMode(m->forward, OUTPUT);
-        pinMode(m->backward, OUTPUT);
-
-        digitalWrite(m->activate, HIGH);
-    }
-
-    void forward(struct motor *m) {
-        digitalWrite(m->forward, HIGH);
-        digitalWrite(m->backward, LOW);
-    }
-
-    void backward(struct motor *m) {
-        digitalWrite(m->forward, LOW);
-        digitalWrite(m->backward, HIGH);
-    }
-
-    void stop(struct motor *m) {
-        digitalWrite(m->forward, LOW);
-        digitalWrite(m->backward, LOW);
-    }
-}
-
-namespace Sensor {
-    struct sensor {
-        int near;
-        int far;
-    };
-
-    struct sensor left = {
-            Constant::SENSOR_LEFT_NEAR,
-            Constant::SENSOR_LEFT_FAR
-    };
-
-    struct sensor right = {
-            Constant::SENSOR_RIGHT_NEAR,
-            Constant::SENSOR_RIGHT_FAR
-    };
-
-    void activate(struct sensor *s) {
-        pinMode(s->near, INPUT);
-        pinMode(s->far, INPUT);
-    }
-
-    int near(struct sensor *s) { return digitalRead(s->near); }
-
-    int far(struct sensor *s) { return digitalRead(s->far); }
-}
+#include "Motor.hpp"
+#include "Sensor.hpp"
+#include "speed.hpp"
 
 void setup() {
     Serial.begin(9600);
-    pinMode(13, OUTPUT);
 
-    Motor::activate(&Motor::left);
-    Motor::activate(&Motor::right);
+    Motor::LEFT->activate();
+    Motor::RIGHT->activate();
 
-    Sensor::activate(&Sensor::left);
-    Sensor::activate(&Sensor::right);
+    Sensor::LEFT->activate();
+    Sensor::RIGHT->activate();
 
-    Serial.println("1 na czujniku to bialy, 0 to czarny.");
-}
+    Speed::activate();
 
-void speedUp() {
-    digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, LOW);
-}
-
-void slowDown() {
-    digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, HIGH);
+    Serial.println("Sensor input 0 => black color detected.")
+    Serial.println("Sensor input 1 => white color detected.")
 }
 
 void loop() {
-    int leftNear = Sensor::near(&Sensor::left);
-    int rightNear = Sensor::near(&Sensor::right);
+    int leftNear = Sensor::LEFT->near();
+    int rightNear = Sensor::RIGHT->near();
 
     if (leftNear xor rightNear) {
         if (leftNear) {
             Serial.println("Left");
 
-            backward(&Motor::left);
-            forward(&Motor::right);
+            Motor::LEFT->backward();
+            Motor::RIGHT->forward();
         }
+
         if (rightNear) {
             Serial.println("Right");
 
-            forward(&Motor::left);
-            backward(&Motor::right);
+            Motor::LEFT->forward();
+            Motor::RIGHT->backward();
         }
+
+        Speed::decrease();
     } else {
         Serial.println("Forward!");
 
-        forward(&Motor::left);
-        forward(&Motor::right);
+        Motor::LEFT->forward();
+        Motor::RIGHT->forward();
+
+        Speed::increase();
     }
 
     delay(100);
 }
-
-
-/* 
-
-Obsługa switcha:
-
-1 - lewy silnik - bliski czujnik - gdy aktywny pojazd jedzie w lewo
-2 - lewy silnik - daleki czujnik - póki co bez funkcjonalności
-3 - prawy silnik - bliski czujnik - gdy aktywny pojazd jedzie w prawo
-4 - prawy silnik - daleki czujnik - póki co bez funkcjonalności
-1 i 3 - gdy razem aktywne pojazd jedzie na wprost
-Gdy żaden nieaktywny pojazd się nie porusza
-
-*/
