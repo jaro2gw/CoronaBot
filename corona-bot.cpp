@@ -1,12 +1,10 @@
-/*  Project by 
-  Hercog Maciej,
-  Jaroński Piotr, 
-    Kolanowski Jan, 
-  Mieczyński Paweł, 
-    Szalczyk Paweł
-*/
-
-//instrukcja obsługi switcha na dole
+/* Project by:
+ * Hercog Maciej,
+ * Jaroński Piotr,
+ * Kolanowski Jan,
+ * Mieczyński Paweł,
+ * Szalczyk Paweł
+ */
 
 namespace Constant {
     // Left motor
@@ -27,7 +25,7 @@ namespace Constant {
     const int SENSOR_RIGHT_NEAR = 11;
     const int SENSOR_RIGHT_FAR = 12;
 
-    const int ENSURE_STOP = 1;
+    const int SPEED_LEVEL_CONTROLLER = 13;
 }
 
 namespace Motor {
@@ -112,47 +110,36 @@ void setup() {
     Serial.println("1 na czujniku to bialy, 0 to czarny.");
 }
 
-int stop = Constant::ENSURE_STOP;
+void speedUp() {
+    digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, LOW);
+}
+
+void slowDown() {
+    digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, HIGH);
+}
 
 void loop() {
-    digitalWrite(13, LOW);
     int leftNear = Sensor::near(&Sensor::left);
     int rightNear = Sensor::near(&Sensor::right);
 
-    if (leftNear == LOW && rightNear == LOW) {
+    if (leftNear xor rightNear) {
+        if (leftNear) {
+            Serial.println("Left");
+
+            backward(&Motor::left);
+            forward(&Motor::right);
+        }
+        if (rightNear) {
+            Serial.println("Right");
+
+            forward(&Motor::left);
+            backward(&Motor::right);
+        }
+    } else {
         Serial.println("Forward!");
 
         forward(&Motor::left);
         forward(&Motor::right);
-
-        stop = Constant::ENSURE_STOP;
-    }
-
-    if (leftNear == HIGH && rightNear == LOW) {
-        Serial.println("Left");
-
-        backward(&Motor::left);
-        forward(&Motor::right);
-
-        stop = Constant::ENSURE_STOP;
-    }
-
-    if (leftNear == LOW && rightNear == HIGH) {
-        Serial.println("Right");
-
-        forward(&Motor::left);
-        backward(&Motor::right);
-
-        stop = Constant::ENSURE_STOP;
-    }
-
-    if (leftNear == HIGH && rightNear == HIGH) {
-        if (--stop) Serial.println("Ensure Stop");
-        else {
-            stop(&Motor::left);
-            stop(&Motor::right);
-        }
-        delay(400);
     }
 
     delay(100);
