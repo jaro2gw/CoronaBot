@@ -6,69 +6,9 @@
  * Szalczyk Paweł
  */
 
-namespace Constant {
-    // Left motor
-    const int MOTOR_LEFT_ACTIVATE = 2;
-    const int MOTOR_LEFT_FORWARD = 3;
-    const int MOTOR_LEFT_BACKWARD = 4;
-
-    // Left sensors
-    const int SENSOR_LEFT_NEAR = 5;
-    const int SENSOR_LEFT_FAR = 6;
-
-    // Right motor
-    const int MOTOR_RIGHT_ACTIVATE = 8;
-    const int MOTOR_RIGHT_FORWARD = 9;
-    const int MOTOR_RIGHT_BACKWARD = 10;
-
-    // Right sensors
-    const int SENSOR_RIGHT_NEAR = 11;
-    const int SENSOR_RIGHT_FAR = 12;
-
-    const int SPEED_LEVEL_CONTROLLER = 13;
-}
 
 namespace Motor {
-    struct motor {
-        int activate;
-        int forward;
-        int backward;
-    };
 
-    struct motor left = {
-            Constant::MOTOR_LEFT_ACTIVATE,
-            Constant::MOTOR_LEFT_FORWARD,
-            Constant::MOTOR_LEFT_BACKWARD
-    };
-
-    struct motor right = {
-            Constant::MOTOR_RIGHT_ACTIVATE,
-            Constant::MOTOR_RIGHT_FORWARD,
-            Constant::MOTOR_RIGHT_BACKWARD
-    };
-
-    void activate(struct motor *m) {
-        pinMode(m->activate, OUTPUT);
-        pinMode(m->forward, OUTPUT);
-        pinMode(m->backward, OUTPUT);
-
-        digitalWrite(m->activate, HIGH);
-    }
-
-    void forward(struct motor *m) {
-        digitalWrite(m->forward, HIGH);
-        digitalWrite(m->backward, LOW);
-    }
-
-    void backward(struct motor *m) {
-        digitalWrite(m->forward, LOW);
-        digitalWrite(m->backward, HIGH);
-    }
-
-    void stop(struct motor *m) {
-        digitalWrite(m->forward, LOW);
-        digitalWrite(m->backward, LOW);
-    }
 }
 
 namespace Sensor {
