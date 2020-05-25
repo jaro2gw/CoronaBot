@@ -5,7 +5,7 @@
 #ifndef CORONABOT_CONSTANT_H
 #define CORONABOT_CONSTANT_H
 
-namespace Constant {
+namespace PIN {
         // Left motor
         const int MOTOR_LEFT_ACTIVATE = 2;
         const int MOTOR_LEFT_FORWARD = 3;
@@ -24,7 +24,7 @@ namespace Constant {
         const int SENSOR_RIGHT_NEAR = 11;
         const int SENSOR_RIGHT_FAR = 12;
 
-        const int SPEED_LEVEL_CONTROLLER = 13;
+        const int SPEED_LEVEL = 13;
 }
 
 #endif //CORONABOT_CONSTANT_H

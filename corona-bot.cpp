@@ -6,90 +6,50 @@
  * Szalczyk Paweł
  */
 
-
-namespace Motor {
-
-}
-
-namespace Sensor {
-    struct sensor {
-        int near;
-        int far;
-    };
-
-    struct sensor left = {
-            Constant::SENSOR_LEFT_NEAR,
-            Constant::SENSOR_LEFT_FAR
-    };
-
-    struct sensor right = {
-            Constant::SENSOR_RIGHT_NEAR,
-            Constant::SENSOR_RIGHT_FAR
-    };
-
-    void activate(struct sensor *s) {
-        pinMode(s->near, INPUT);
-        pinMode(s->far, INPUT);
-    }
-
-    int near(struct sensor *s) { return digitalRead(s->near); }
-
-    int far(struct sensor *s) { return digitalRead(s->far); }
-}
-
-namespace Speed {
-    void activate() {
-        pinMode(SPEED_LEVEL_CONTROLLER, OUTPUT);
-    }
-
-    void increase() {
-        digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, LOW);
-    }
-
-    void decrease() {
-        digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, HIGH);
-    }
-}
+#include "Motor.hpp"
+#include "Sensor.hpp"
+#include "speed.hpp"
 
 void setup() {
     Serial.begin(9600);
 
-    Motor::activate(&Motor::left);
-    Motor::activate(&Motor::right);
+    Motor::LEFT->activate();
+    Motor::RIGHT->activate();
 
-    Sensor::activate(&Sensor::left);
-    Sensor::activate(&Sensor::right);
+    Sensor::LEFT->activate();
+    Sensor::RIGHT->activate();
 
     Speed::activate();
 
-    Serial.println("1 na czujniku to bialy, 0 to czarny.");
+    Serial.println("Sensor input 0 => black color detected.")
+    Serial.println("Sensor input 1 => white color detected.")
 }
 
 void loop() {
-    int leftNear = Sensor::near(&Sensor::left);
-    int rightNear = Sensor::near(&Sensor::right);
+    int leftNear = Sensor::LEFT->near();
+    int rightNear = Sensor::RIGHT->near();
 
     if (leftNear xor rightNear) {
         if (leftNear) {
             Serial.println("Left");
 
-            backward(&Motor::left);
-            forward(&Motor::right);
+            Motor::LEFT->backward();
+            Motor::RIGHT->forward();
         }
 
         if (rightNear) {
             Serial.println("Right");
 
-            forward(&Motor::left);
-            backward(&Motor::right);
+            Motor::LEFT->forward();
+            Motor::RIGHT->backward();
         }
 
         Speed::decrease();
     } else {
         Serial.println("Forward!");
 
-        forward(&Motor::left);
-        forward(&Motor::right);
+        Motor::LEFT->forward();
+        Motor::RIGHT->forward();
 
         Speed::increase();
     }
