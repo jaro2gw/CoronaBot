@@ -27,8 +27,7 @@ namespace Constant {
     const int SENSOR_RIGHT_NEAR = 11;
     const int SENSOR_RIGHT_FAR = 12;
 
-    //
-    const int
+    const int ENSURE_STOP = 1;
 }
 
 namespace Motor {
@@ -113,6 +112,8 @@ void setup() {
     Serial.println("1 na czujniku to bialy, 0 to czarny.");
 }
 
+int stop = Constant::ENSURE_STOP;
+
 void loop() {
     digitalWrite(13, LOW);
     int leftNear = Sensor::near(&Sensor::left);
@@ -123,6 +124,8 @@ void loop() {
 
         forward(&Motor::left);
         forward(&Motor::right);
+
+        stop = Constant::ENSURE_STOP;
     }
 
     if (leftNear == HIGH && rightNear == LOW) {
@@ -130,6 +133,8 @@ void loop() {
 
         backward(&Motor::left);
         forward(&Motor::right);
+
+        stop = Constant::ENSURE_STOP;
     }
 
     if (leftNear == LOW && rightNear == HIGH) {
@@ -137,13 +142,17 @@ void loop() {
 
         forward(&Motor::left);
         backward(&Motor::right);
+
+        stop = Constant::ENSURE_STOP;
     }
 
     if (leftNear == HIGH && rightNear == HIGH) {
-        Serial.println("STOP");
-
-        stop(&Motor::left);
-        stop(&Motor::right);
+        if (--stop) Serial.println("Ensure Stop");
+        else {
+            stop(&Motor::left);
+            stop(&Motor::right);
+        }
+        delay(400);
     }
 
     delay(100);
