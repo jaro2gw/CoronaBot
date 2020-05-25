@@ -97,9 +97,22 @@ namespace Sensor {
     int far(struct sensor *s) { return digitalRead(s->far); }
 }
 
+namespace Speed {
+    void activate() {
+        pinMode(SPEED_LEVEL_CONTROLLER, OUTPUT);
+    }
+
+    void increase() {
+        digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, LOW);
+    }
+
+    void decrease() {
+        digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, HIGH);
+    }
+}
+
 void setup() {
     Serial.begin(9600);
-    pinMode(13, OUTPUT);
 
     Motor::activate(&Motor::left);
     Motor::activate(&Motor::right);
@@ -107,15 +120,9 @@ void setup() {
     Sensor::activate(&Sensor::left);
     Sensor::activate(&Sensor::right);
 
+    Speed::activate();
+
     Serial.println("1 na czujniku to bialy, 0 to czarny.");
-}
-
-void speedUp() {
-    digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, LOW);
-}
-
-void slowDown() {
-    digitalWrite(Constant::SPEED_LEVEL_CONTROLLER, HIGH);
 }
 
 void loop() {
@@ -129,32 +136,23 @@ void loop() {
             backward(&Motor::left);
             forward(&Motor::right);
         }
+
         if (rightNear) {
             Serial.println("Right");
 
             forward(&Motor::left);
             backward(&Motor::right);
         }
+
+        Speed::decrease();
     } else {
         Serial.println("Forward!");
 
         forward(&Motor::left);
         forward(&Motor::right);
+
+        Speed::increase();
     }
 
     delay(100);
 }
-
-
-/* 
-
-Obsługa switcha:
-
-1 - lewy silnik - bliski czujnik - gdy aktywny pojazd jedzie w lewo
-2 - lewy silnik - daleki czujnik - póki co bez funkcjonalności
-3 - prawy silnik - bliski czujnik - gdy aktywny pojazd jedzie w prawo
-4 - prawy silnik - daleki czujnik - póki co bez funkcjonalności
-1 i 3 - gdy razem aktywne pojazd jedzie na wprost
-Gdy żaden nieaktywny pojazd się nie porusza
-
-*/
