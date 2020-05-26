@@ -40,7 +40,7 @@ void loop() {
         if (leftNear == HIGH) {
             Serial.println("Left");
 
-            Motor::LEFT->stop();
+            Motor::LEFT->backward();
             Motor::RIGHT->forward();
         }
 
@@ -49,7 +49,7 @@ void loop() {
             Serial.println("Right");
 
             Motor::LEFT->forward();
-            Motor::RIGHT->stop();
+            Motor::RIGHT->backward();
         }
 
         Speed::decrease();
