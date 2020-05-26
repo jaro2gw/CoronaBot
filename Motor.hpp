@@ -17,9 +17,9 @@ public:
     }
 
     void activate() const {
-        pinMode(activate, OUTPUT);
-        pinMode(forward, OUTPUT);
-        pinMode(backward, OUTPUT);
+        pinMode(_activate, OUTPUT);
+        pinMode(_forward, OUTPUT);
+        pinMode(_backward, OUTPUT);
 
         digitalWrite(_activate, HIGH);
     }

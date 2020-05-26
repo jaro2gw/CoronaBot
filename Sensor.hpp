@@ -15,8 +15,8 @@ public:
     }
 
     void activate() const {
-        pinMode(near, INPUT);
-        pinMode(far, INPUT);
+        pinMode(_near, INPUT);
+        pinMode(_far, INPUT);
     }
 
     int near() const {
