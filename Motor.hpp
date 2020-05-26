@@ -11,16 +11,16 @@ private:
 
 public:
     Motor(int activate, int forward, int backward) {
-        pinMode(activate, OUTPUT);
-        pinMode(forward, OUTPUT);
-        pinMode(backward, OUTPUT);
-
         this->_activate = activate;
         this->_forward = forward;
         this->_backward = backward;
     }
 
     void activate() const {
+        pinMode(_activate, OUTPUT);
+        pinMode(_forward, OUTPUT);
+        pinMode(_backward, OUTPUT);
+
         digitalWrite(_activate, HIGH);
     }
 

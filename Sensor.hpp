@@ -10,16 +10,22 @@ private:
 
 public:
     Sensor(int near, int far) {
-        pinMode(near, INPUT);
-        pinMode(far, INPUT);
-
         this->_near = near;
         this->_far = far;
     }
 
-    int near() const { return digitalRead(_near); }
+    void activate() const {
+        pinMode(_near, INPUT);
+        pinMode(_far, INPUT);
+    }
 
-    int far() const { return digitalRead(_far); }
+    int near() const {
+        return digitalRead(_near);
+    }
+
+    int far() const {
+        return digitalRead(_far);
+    }
 
     static Sensor *LEFT, *RIGHT;
 };
