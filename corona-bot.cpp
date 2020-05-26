@@ -30,14 +30,14 @@ void loop() {
     int rightNear = Sensor::RIGHT->near();
 
     if (leftNear xor rightNear) {
-        if (leftNear) {
+        if (leftNear == HIGH) {
             Serial.println("Left");
 
             Motor::LEFT->backward();
             Motor::RIGHT->forward();
         }
 
-        if (rightNear) {
+        if (rightNear == HIGH) {
             Serial.println("Right");
 
             Motor::LEFT->forward();
