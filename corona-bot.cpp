@@ -27,7 +27,12 @@ void setup() {
 
 void loop() {
     int leftNear = Sensor::LEFT->near();
+    int leftFar = Sensor::LEFT->far();
+
     int rightNear = Sensor::RIGHT->near();
+    int rightFar = Sensor::RIGHT->far();
+
+    /* TODO implement the use of far sensors. */
 
     if (leftNear xor rightNear) {
         if (leftNear) {
